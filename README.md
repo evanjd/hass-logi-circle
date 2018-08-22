@@ -4,7 +4,7 @@ This is a temporary staging area for the Logi Circle home assistant component, m
 
 To use, download the ZIP and extract into the `custom_components` folder. The folder tree should look like:
 
-- custom_components
+- `custom_components` [folder]
   - `logi.py` [file]
   - `logi_camera` [folder]
     - bunch of files
