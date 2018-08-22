@@ -1,8 +1,20 @@
 # hass-logi-circle
 
-This is a temporary staging area for the Logi Circle home assistant component, modified to work within the `custom_components` folder. All real development will occur on the `home-assistant` repo, and this repo will be closed once it's been validated that everything has been working.
+This is a temporary staging area for the Logi Circle home assistant component, modified to work within the `custom_components` folder. All real development will occur on the `home-assistant` repo, and this repo will be closed once it's been validated that everything's working.
 
-To use, download the ZIP and extract into the `custom_components` folder. Then in your configuration.yaml, add the following:
+To use, download the ZIP and extract into the `custom_components` folder. The folder tree should look like:
+
+- custom_components
+  - `logi.py` [file]
+  - `logi_camera` [folder]
+    - bunch of files
+  - `camera` [folder]
+    - `logi.py` [file]
+  - `sensor` [folder]
+    - `logi.py` [file]
+   
+
+Then in your configuration.yaml, add the following:
 
 ```
 logi:
