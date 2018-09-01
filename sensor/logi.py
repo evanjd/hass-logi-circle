@@ -36,12 +36,6 @@ SENSOR_TYPES = {
     'last_activity_time': [
         'Last Activity', None, 'history'],
 
-    'speaker_volume': [
-        'Volume', '%', 'volume-high'],
-
-    'microphone_gain': [
-        'Microphone Gain', '%', 'microphone'],
-
     'privacy_mode': [
         'Privacy Mode', None, 'eye'],
 
@@ -50,15 +44,6 @@ SENSOR_TYPES = {
 
     'signal_strength_percentage': [
         'WiFi Signal Strength', '%', 'wifi'],
-
-    'is_streaming': [
-        'Streaming Mode', None, 'camera'],
-
-    'temperature': [
-        'Temperature', None, 'thermometer'],
-
-    'humidity': [
-        'Humidity', None, 'water-percent'],
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -71,13 +56,13 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up a sensor for a Logi Circle device."""
-    logi = hass.data[DATA_LOGI]
+    devices = hass.data[DATA_LOGI]
 
-    cameras = await logi.cameras
     sensors = []
     for sensor_type in config.get(CONF_MONITORED_CONDITIONS):
-        for device in cameras:
-            sensors.append(LogiSensor(hass, device, sensor_type))
+        for device in devices:
+            if device.supports_feature(sensor_type):
+                sensors.append(LogiSensor(hass, device, sensor_type))
 
     add_devices(sensors, True)
     return True
@@ -114,6 +99,7 @@ class LogiSensor(Entity):
             ATTR_ATTRIBUTION: CONF_ATTRIBUTION,
             'firmware': self._camera.firmware,
             'model': self._camera.model,
+            'model_type': self._camera.model_type,
             'timezone': self._camera.timezone,
             'ip_address': self._camera.ip_address,
             'mac_address': self._camera.mac_address,

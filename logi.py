@@ -10,9 +10,8 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_USERNAME, CONF_PASSWORD
-from homeassistant.components.camera import CAMERA_SERVICE_SCHEMA
 
-REQUIREMENTS = ['logi_circle==0.1.1']
+REQUIREMENTS = ['logi_circle==0.1.3']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -43,6 +42,7 @@ async def async_setup(hass, config):
     try:
         from logi_circle import Logi
         from logi_circle.exception import BadLogin
+        from aiohttp.client_exceptions import ClientResponseError
 
         cache = hass.config.path(DEFAULT_CACHEDB)
         logi = Logi(username=username, password=password, cache_file=cache)
@@ -50,8 +50,8 @@ async def async_setup(hass, config):
 
         if not logi.is_connected:
             return False
-        hass.data['logi'] = logi
-    except BadLogin as ex:
+        hass.data['logi'] = await logi.cameras
+    except (BadLogin, ClientResponseError) as ex:
         _LOGGER.error('Unable to connect to Logi API: %s', str(ex))
         hass.components.persistent_notification.create(
             'Error: {}<br />'
