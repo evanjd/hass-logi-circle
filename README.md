@@ -99,4 +99,6 @@ Example payload:
 }
 ```
 
+---
+
 Lastly, the camera entity supports the `turn_on` and `turn_off` service. `turn_off` should disable streaming on the target entity (meaning no live stream and no activity recordings), `turn_on` should activate streaming.
