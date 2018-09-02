@@ -87,7 +87,7 @@ Example payload:
 
 ---
 
-- `logi_download_livestream`: Downloads the livestream to an MP4 at the duration specified (in seconds).
+- `logi_download_livestream`: Downloads the livestream to an MP4 at the duration specified (in seconds). The downloaded video's duration will not match precisely what was requested but should be very close. The implementation of this depends on how Logi's API segments the live stream. For example, if it breaks the live stream into 4s segments, then a requested duration of 30s will return a video that's 32 seconds (4s x 8 segments).
 
 Example payload:
 
@@ -98,5 +98,7 @@ Example payload:
   "duration": 30
 }
 ```
+
+---
 
 Lastly, the camera entity supports the `turn_on` and `turn_off` service. `turn_off` should disable streaming on the target entity (meaning no live stream and no activity recordings), `turn_on` should activate streaming.
