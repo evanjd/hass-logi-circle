@@ -1,6 +1,14 @@
 # hass-logi-circle
 
-This is a temporary staging area for the Logi Circle home assistant component, modified to work within the `custom_components` folder. All real development will occur on the `home-assistant` repo, and this repo will be closed once it's been validated that everything's working.
+This component is now official in the 0.79 release of Home Assistant, this custom component is no longer required. Refer to this link for more information: https://www.home-assistant.io/components/logi_circle/
+
+I'll keep this repo up as a staging area for future enhancements. For now, it's still hosting an outdated copy of the logi circle component and I do not recommend you use it! Thanks.
+
+Original README is as follows:
+
+---
+
+This is a temporary staging area for the Logi Circle home assistant component, modified to work within the `custom_components` folder. All real development will occur on the `home-assistant` repo. For official support, please use the official component.
 
 To use, download the ZIP and extract into the `custom_components` folder. The folder tree should look like:
 
