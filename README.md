@@ -1,112 +1,17 @@
 # hass-logi-circle
 
-This component is now official in the 0.79 release of Home Assistant, this custom component is no longer required. Refer to this link for more information: https://www.home-assistant.io/components/logi_circle/
+This is a staging area for future enhancements to the Logi Circle integration in Home Assistant.
 
-I'll keep this repo up as a staging area for future enhancements. For now, it's still hosting an outdated copy of the logi circle component and I do not recommend you use it! Thanks.
-
-Original README is as follows:
+If you're looking for official support, this repo is not required. Please refer to this link for more information: https://www.home-assistant.io/components/logi_circle/
 
 ---
 
-This is a temporary staging area for the Logi Circle home assistant component, modified to work within the `custom_components` folder. All real development will occur on the `home-assistant` repo. For official support, please use the official component.
+This adds support for showing the last activity video when opening up the camera's live view from Home Assistant. It requires Home Assistant 0.79 or later.
+
+Videos are converted from their original MP4 format into MJPEG stream. A side effect of this conversion is that videos do not play back at the correct speed.
 
 To use, download the ZIP and extract into the `custom_components` folder. The folder tree should look like:
 
 - `custom_components` [folder]
-  - `logi.py` [file]
   - `camera` [folder]
-    - `logi.py` [file]
-  - `sensor` [folder]
-    - `logi.py` [file]
-
-## Configuration
-
-In your configuration.yaml, add the following:
-
-```
-logi:
-  username: your@email.com
-  password: your_password
-
-camera:
-  - platform: logi
-
-sensor:
-  - platform: logi
-```
-
-You can optionally filter out monitoring conditions you're not interested from the logi sensor. For example, if you only wanted to show battery level, last activity and signal strength, you can configure the sensor as follows:
-
-```
-sensor:
- - platform: logi
-   monitored_conditions:
-     - battery_level
-     - last_activity_time
-     - signal_strength_category
-```
-
-The full list of supported conditions is: `battery_level`, `last_activity_time`, `privacy_mode`, `signal_strength_category`, `signal_strength_percentage`
-
-## Services
-
-The camera entities exposes a few services. Those are:
-
-- `logi_set_mode`: Allows you to set the `led`, `privacy_mode` or `streaming_mode` statuses. LED and privacy mode expect a boolean (`true`/`false`), streaming mode expects a string (`'on'`, `'off'`, `'onAlert'`).
-
-Example payloads:
-
-```json
-{
-  "entity_id": "camera.living_room",
-  "mode": "led",
-  "value": true
-}
-```
-
-```json
-{
-  "entity_id": "camera.living_room",
-  "mode": "privacy_mode",
-  "value": true
-}
-```
-
-```json
-{
-  "entity_id": "camera.living_room",
-  "mode": "streaming_mode",
-  "value": "onAlert"
-}
-```
-
----
-
-- `logi_livestream_snapshot`: Takes a JPEG snapshot from the livestream. Takes the same JSON payload as the native `snapshot` method, but should take the snapshot at the instant you request it, rather than using the cached image.
-
-Example payload:
-
-```json
-{
-  "entity_id": "camera.living_room",
-  "filename": "/tmp/snapshot_{{ entity_id }}.jpg"
-}
-```
-
----
-
-- `logi_download_livestream`: Downloads the livestream to an MP4 at the duration specified (in seconds). The downloaded video's duration will not match precisely what was requested but should be very close. The implementation of this depends on how Logi's API segments the live stream. For example, if it breaks the live stream into 4s segments, then a requested duration of 30s will return a video that's 32 seconds (4s x 8 segments).
-
-Example payload:
-
-```json
-{
-  "entity_id": "camera.living_room",
-  "filename": "/tmp/stream_{{ entity_id }}.mp4",
-  "duration": 30
-}
-```
-
----
-
-Lastly, the camera entity supports the `turn_on` and `turn_off` service. `turn_off` should disable streaming on the target entity (meaning no live stream and no activity recordings), `turn_on` should activate streaming.
+    - `logi_circle.py` [file]
