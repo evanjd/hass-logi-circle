@@ -1,26 +1,22 @@
-"""
-This component provides support to the Logi Circle camera.
-
-For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/camera.logi_circle/
-"""
-import logging
+"""Support to the Logi Circle cameras."""
 import asyncio
 from datetime import timedelta
+import logging
 
 import voluptuous as vol
 
-from homeassistant.helpers import config_validation as cv
-from homeassistant.components.logi_circle import (
-    DOMAIN as LOGI_CIRCLE_DOMAIN, CONF_ATTRIBUTION)
 from homeassistant.components.camera import (
-    Camera, PLATFORM_SCHEMA, CAMERA_SERVICE_SCHEMA, SUPPORT_ON_OFF,
-    ATTR_ENTITY_ID, ATTR_FILENAME, DOMAIN)
-from homeassistant.components.ffmpeg import DATA_FFMPEG
+    ATTR_ENTITY_ID, ATTR_FILENAME, CAMERA_SERVICE_SCHEMA,
+    PLATFORM_SCHEMA, SUPPORT_ON_OFF, Camera)
+from homeassistant.components.camera.const import DOMAIN
 from homeassistant.const import (
     ATTR_ATTRIBUTION, ATTR_BATTERY_CHARGING, ATTR_BATTERY_LEVEL,
-    CONF_SCAN_INTERVAL, STATE_ON, STATE_OFF)
+    CONF_SCAN_INTERVAL, STATE_OFF, STATE_ON)
+from homeassistant.components.ffmpeg import DATA_FFMPEG
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
+
+from . import ATTRIBUTION, DOMAIN as LOGI_CIRCLE_DOMAIN
 
 DEPENDENCIES = ['logi_circle', 'ffmpeg']
 
@@ -31,7 +27,7 @@ SCAN_INTERVAL = timedelta(seconds=60)
 SERVICE_SET_CONFIG = 'logi_circle_set_config'
 SERVICE_LIVESTREAM_SNAPSHOT = 'logi_circle_livestream_snapshot'
 SERVICE_LIVESTREAM_RECORD = 'logi_circle_livestream_record'
-DATA_KEY = 'camera.logi_circle'
+DATA_KEY = 'camera.logi_circle_legacy'
 
 BATTERY_SAVING_MODE_KEY = 'BATTERY_SAVING'
 PRIVACY_MODE_KEY = 'PRIVACY_MODE'
@@ -137,7 +133,7 @@ class LogiCam(Camera):
     def device_state_attributes(self):
         """Return the state attributes."""
         state = {
-            ATTR_ATTRIBUTION: CONF_ATTRIBUTION,
+            ATTR_ATTRIBUTION: ATTRIBUTION,
             'battery_saving_mode': (
                 STATE_ON if self._camera.battery_saving else STATE_OFF),
             'ip_address': self._camera.ip_address,
@@ -157,7 +153,7 @@ class LogiCam(Camera):
 
     async def handle_async_mjpeg_stream(self, request):
         """Generate an HTTP MJPEG stream from the camera's last activity."""
-        from haffmpeg import CameraMjpeg
+        from haffmpeg.camera import CameraMjpeg
 
         last_activity = await self._camera.last_activity
         session_cookie = self._camera._logi._cache['cookie']
@@ -167,10 +163,16 @@ class LogiCam(Camera):
         await stream.open_camera(
             '-headers %s -i %s' % (header, last_activity.download_url))
 
-        await async_aiohttp_proxy_stream(
-            self.hass, request, stream,
-            'multipart/x-mixed-replace;boundary=ffserver')
-        await stream.close()
+        try:
+            stream_reader = await stream.get_reader()
+            return await async_aiohttp_proxy_stream(
+                self.hass, request, stream_reader,
+                self._ffmpeg.ffmpeg_stream_content_type)
+        finally:
+            try:
+                await stream.close()
+            except BrokenPipeError:
+                return
 
     async def async_turn_off(self):
         """Disable streaming mode for this camera."""

@@ -1,19 +1,30 @@
 # hass-logi-circle
 
-This is a staging area for future enhancements to the Logi Circle integration in Home Assistant.
+This branch hosts the private API based version of the Logi Circle integration, compatible with the latest Home Assistant release (0.92 at time of writing).
 
-If you're looking for official support, this repo is not required. Please refer to this link for more information: https://www.home-assistant.io/components/logi_circle/
+This is intended for users who are stuck without an API key. If you have an API key, please use the [official integration](https://www.home-assistant.io/components/logi_circle/).
 
 ---
-
-This adds support for showing the last activity video when opening up the camera's live view from Home Assistant. It also resolves an issue with the sensor platform on 0.81+. It requires Home Assistant 0.79 or later.
-
-Activity videos are converted from their original MP4 format into MJPEG stream. A side effect of this conversion is that videos do not play back at the correct speed.
 
 To use, download the ZIP and extract into the `custom_components` folder. The folder tree should look like:
 
 - `custom_components` [folder]
-  - `camera` [folder]
-    - `logi_circle.py` [file]
-  - `sensor` [folder]
-    - `logi_circle.py` [file]
+  - `logi_circle_legacy` [folder]
+    - `manifest.json`
+    - `__init.py__`
+    - `camera.py`
+    - `sensor.py`
+
+Add the following to your `configuration.yaml`:
+
+```yaml
+logi_circle_legacy:
+    username: YOUR_USERNAME_HERE
+    password: YOUR_PASSWORD_HERE
+
+camera:
+  - platform: logi_circle_legacy
+
+sensor:
+  - platform: logi_circle_legacy
+```
