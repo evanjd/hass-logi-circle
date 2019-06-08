@@ -36,11 +36,11 @@ async def async_setup(hass, config):
     username = conf[CONF_USERNAME]
     password = conf[CONF_PASSWORD]
 
-    try:
-        from logi_circle import Logi
-        from logi_circle.exception import BadLogin
-        from aiohttp.client_exceptions import ClientResponseError
+    from logi_circle import Logi
+    from logi_circle.exception import BadLogin
+    from aiohttp.client_exceptions import ClientResponseError
 
+    try:
         cache = hass.config.path(DEFAULT_CACHEDB)
         logi = Logi(username=username, password=password, cache_file=cache)
 
