@@ -8,7 +8,7 @@ import voluptuous as vol
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['logi_circle==0.1.7']
+REQUIREMENTS = ['logi_circle==0.1.8']
 
 _LOGGER = logging.getLogger(__name__)
 _TIMEOUT = 15  # seconds

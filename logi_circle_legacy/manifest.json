@@ -4,5 +4,5 @@
   "documentation": "https://github.com/evanjd/hass-logi-circle/tree/legacy",
   "dependencies": ["ffmpeg"],
   "codeowners": ["@evanjd"],
-  "requirements": ["logi_circle==0.1.7"]
+  "requirements": ["logi_circle==0.1.8"]
 }
